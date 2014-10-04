@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    triangle.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    triangle.h
 
 FORMS    += mainwindow.ui
+
+QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra
