@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPen>
 
 namespace Ui {
 class MainWindow;
@@ -16,18 +17,26 @@ public:
     ~MainWindow();
 
 public slots:
-    void draw();
+    void updatePensAndBrushes();
     void regenerate();
-    void a_propos();
+    void draw();
+    void save();
+    void about();
+    void clockwiseRotation();
+    void counterclockwiseRotation();
 
 protected:
-    void wheelEvent(QWheelEvent *);
-    bool eventFilter(QObject *object, QEvent *event);
+    void zoom(QWheelEvent *);
+    void moveCircle(QMouseEvent *);
+    bool eventFilter(QObject *object, QEvent *e);
 
 private:
     Ui::MainWindow *ui;
     class QGraphicsScene *scene_;
-    class Triangle *triangle_;
+    std::list<class Triangle> triangles_;
+    QPen pens_[3][2];
+    QBrush brushes_[2][2];
+    QRectF circle_;
 };
 
 #endif // MAINWINDOW_H

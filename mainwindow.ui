@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>784</width>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,36 +37,60 @@
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
       <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Polygone :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="polygon">
+        <item>
+         <property name="text">
+          <string>Triangle aigu</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Triangle obtu</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Cerf-volant</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Fléchette</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Décagone</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Étoile</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Schéma aigu :</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QSpinBox" name="acute_pattern">
         <property name="minimum">
          <number>1</number>
         </property>
         <property name="maximum">
          <number>4</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Schéma obtu :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="obtuse_pattern">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>2</number>
         </property>
        </widget>
       </item>
@@ -78,7 +102,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QCheckBox" name="double_cut">
+       <widget class="QCheckBox" name="acute_double_cut">
         <property name="text">
          <string/>
         </property>
@@ -88,36 +112,266 @@
        </widget>
       </item>
       <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Schéma obtu :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="obtuse_pattern">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Double découpe :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="obtuse_double_cut">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Itération :</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="5" column="1">
        <widget class="QSpinBox" name="level">
         <property name="maximum">
-         <number>12</number>
+         <number>11</number>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Dessiner
-les lignes :</string>
+         <string>Couleurs lignes :</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="draw_lines">
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="line_color">
         <property name="text">
          <string/>
         </property>
-        <property name="checked">
-         <bool>true</bool>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Type de
+remplissage :</string>
         </property>
        </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QSpinBox" name="filling_type">
+        <property name="maximum">
+         <number>14</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Rotation :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="maximumSize">
+           <size>
+            <width>32</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="maximumSize">
+           <size>
+            <width>32</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Triangles aigus :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLabel" name="acute_count">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Triangles obtus :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QLabel" name="obtuse_count">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Rapport :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QLabel" name="ratio">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Nombre d'or :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>1.61803398874989</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Cercle :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="1">
+       <widget class="QCheckBox" name="circle">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Total :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QLabel" name="total">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Zoom :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QLabel" name="zoom"/>
+      </item>
+      <item row="16" column="1">
+       <widget class="QCheckBox" name="entire_triangles">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Triangles entiers :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="0">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>Triangles aigus :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="0">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string>Triangles obtus :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="1">
+       <widget class="QLabel" name="circle_acute_count"/>
+      </item>
+      <item row="18" column="1">
+       <widget class="QLabel" name="circle_obtuse_count"/>
+      </item>
+      <item row="20" column="0">
+       <widget class="QLabel" name="label_23">
+        <property name="text">
+         <string>Rapport :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="20" column="1">
+       <widget class="QLabel" name="circle_ratio"/>
+      </item>
+      <item row="19" column="0">
+       <widget class="QLabel" name="label_21">
+        <property name="text">
+         <string>Total :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="19" column="1">
+       <widget class="QLabel" name="circle_total"/>
       </item>
      </layout>
     </item>
@@ -128,7 +382,7 @@ les lignes :</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>784</width>
      <height>22</height>
     </rect>
    </property>
@@ -136,7 +390,10 @@ les lignes :</string>
     <property name="title">
      <string>Menu</string>
     </property>
+    <addaction name="actionEnregistrer"/>
+    <addaction name="separator"/>
     <addaction name="actionQuitter"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -159,6 +416,11 @@ les lignes :</string>
   <action name="action_propos">
    <property name="text">
     <string>À propos...</string>
+   </property>
+  </action>
+  <action name="actionEnregistrer">
+   <property name="text">
+    <string>Enregistrer ...</string>
    </property>
   </action>
  </widget>
@@ -188,8 +450,8 @@ les lignes :</string>
    <slot>draw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>133</x>
-     <y>117</y>
+     <x>164</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
      <x>114</x>
@@ -204,8 +466,8 @@ les lignes :</string>
    <slot>regenerate()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>139</x>
-     <y>40</y>
+     <x>164</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -220,8 +482,8 @@ les lignes :</string>
    <slot>regenerate()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>145</x>
-     <y>69</y>
+     <x>164</x>
+     <y>128</y>
     </hint>
     <hint type="destinationlabel">
      <x>152</x>
@@ -230,14 +492,14 @@ les lignes :</string>
    </hints>
   </connection>
   <connection>
-   <sender>double_cut</sender>
+   <sender>acute_double_cut</sender>
    <signal>toggled(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>regenerate()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>84</y>
+     <x>136</x>
+     <y>101</y>
     </hint>
     <hint type="destinationlabel">
      <x>162</x>
@@ -246,14 +508,14 @@ les lignes :</string>
    </hints>
   </connection>
   <connection>
-   <sender>draw_lines</sender>
+   <sender>line_color</sender>
    <signal>toggled(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>draw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>142</y>
+     <x>136</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
      <x>109</x>
@@ -265,7 +527,7 @@ les lignes :</string>
    <sender>action_propos</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>a_propos()</slot>
+   <slot>about()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -277,10 +539,301 @@ les lignes :</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>clockwiseRotation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>146</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>106</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>counterclockwiseRotation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>obtuse_double_cut</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>regenerate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>131</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>polygon</sender>
+   <signal>activated(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>regenerate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>41</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>191</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>filling_type</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>draw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>164</x>
+     <y>228</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionEnregistrer</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>394</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>draw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>165</x>
+     <y>372</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_18</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>401</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>59</x>
+     <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>entire_triangles</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>139</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_19</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>405</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>78</x>
+     <y>449</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_20</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>406</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>87</x>
+     <y>468</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_23</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>414</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>31</x>
+     <y>515</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>circle_acute_count</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>454</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>circle_obtuse_count</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>475</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>circle_ratio</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>117</x>
+     <y>517</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_21</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>24</x>
+     <y>496</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>circle_total</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>496</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entire_triangles</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>draw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>430</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>draw()</slot>
   <slot>regenerate()</slot>
-  <slot>a_propos()</slot>
+  <slot>about()</slot>
+  <slot>clockwiseRotation()</slot>
+  <slot>counterclockwiseRotation()</slot>
+  <slot>save()</slot>
  </slots>
 </ui>

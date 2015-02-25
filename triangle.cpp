@@ -1,10 +1,57 @@
 #include "triangle.h"
-#include <QVector2D>
+#include <QLineF>
 
-Triangle::Triangle(bool acute, QPointF A, QPointF B, QPointF C, int acute_pattern, int obtuse_pattern, bool double_cut)
-    : acute_(acute), acute_pattern_(acute_pattern), obtuse_pattern_(obtuse_pattern), double_cut_(double_cut)
+Triangle::Triangle(bool acute, QPointF A, QPointF B, QPointF C, int acute_pattern, int obtuse_pattern, bool acute_double_cut, bool obtuse_double_cut)
+    : Triangle(acute, QPolygonF({A, B, C}), std::make_shared<Properties>(acute_pattern, obtuse_pattern, acute_double_cut, obtuse_double_cut))
 {
-    triangle_ << A << B << C << A;
+}
+
+Triangle::Triangle(bool acute, QPolygonF triangle, int acute_pattern, int obtuse_pattern, bool acute_double_cut, bool obtuse_double_cut)
+    : Triangle(acute, triangle, std::make_shared<Properties>(acute_pattern, obtuse_pattern, acute_double_cut, obtuse_double_cut))
+{
+
+}
+
+Triangle::Triangle(bool acute, QPointF A, QPointF B, QPointF C, std::shared_ptr<Properties> properties)
+    : Triangle(acute, QPolygonF({A, B, C}), properties)
+{
+}
+
+Triangle::Triangle(bool acute, QPolygonF triangle, std::shared_ptr<Triangle::Properties> properties) : acute_(acute), triangle_(triangle), properties_(properties)
+{
+    if (acute_ && properties_->acute_pattern_ % 2)
+        invert();
+    else if (!acute_ && properties_->obtuse_pattern_ % 2)
+        invert();
+}
+
+
+void Triangle::invert()
+{
+    std::swap(triangle_[SommetB], triangle_[SommetC]);
+}
+
+double Triangle::getBaseLength()
+{
+    if (acute_)
+        return QLineF(triangle_[SommetB], triangle_[SommetC]).length();
+    else
+        return QLineF(triangle_[SommetA], triangle_[SommetB]).length();
+}
+
+std::pair<Triangle, Triangle> Triangle::cut()
+{
+    QPointF &A = triangle_[SommetA], &B = triangle_[SommetB], &C = triangle_[SommetC];
+    if (acute_)
+    {
+        QPointF D = A + getVector(A, B, getBaseLength());
+        return std::make_pair(Triangle(true, C, D, B, properties_), Triangle(false, D, C, A, properties_));
+    }
+    else
+    {
+        QPointF D = B + getVector(B, C, getBaseLength());
+        return std::make_pair(Triangle(true, B, A, D, properties_), Triangle(false, D, C, A, properties_));
+    }
 }
 
 void Triangle::generate()
@@ -12,78 +59,37 @@ void Triangle::generate()
     if (!sub_triangles_.empty())
         sub_triangles_.clear();
 
-    if (acute_)
+    std::pair<Triangle, Triangle> triangle = cut();
+    if (acute_ && properties_->acute_double_cut_)
     {
-        QPointF D, E;
-        double length = QVector2D(triangle_[SommetC] - triangle_[SommetB]).length();
-        if (double_cut_)
-        {
-            if (acute_pattern_ <= 1)
-            {
-                D = triangle_[SommetA] + getVector(triangle_[SommetA], triangle_[SommetB], length);
-                E = triangle_[SommetA] + getVector(triangle_[SommetA], triangle_[SommetC], length);
-                sub_triangles_.push_back(std::unique_ptr<Triangle>(new Triangle(true, triangle_[SommetA], D, E)));
-                if (acute_pattern_ == 0)
-                {
-                    addSubTriangle(true, triangle_[SommetC], D, triangle_[SommetB]);
-                    addSubTriangle(false, E, D, triangle_[SommetC]);
-                }
-                else
-                {
-                    addSubTriangle(true, triangle_[SommetB], triangle_[SommetC], E);
-                    addSubTriangle(false, D, triangle_[SommetB], E);
-                }
-            }
-            else if (acute_pattern_ == 2)
-            {
-                D = triangle_[SommetB] + getVector(triangle_[SommetB], triangle_[SommetA], length);
-                E = triangle_[SommetA] + getVector(triangle_[SommetA], triangle_[SommetC], length);
-                addSubTriangle(true, triangle_[SommetB], E, D);
-                addSubTriangle(true, triangle_[SommetB], triangle_[SommetC], E);
-                addSubTriangle(false, D, E, triangle_[SommetA]);
-            }
-            else
-            {
-                D = triangle_[SommetA] + getVector(triangle_[SommetA], triangle_[SommetB], length);
-                E = triangle_[SommetC] + (QVector2D(triangle_[SommetA] - triangle_[SommetC]).normalized()*length).toPointF();
-                E = triangle_[SommetC] + getVector(triangle_[SommetC], triangle_[SommetA], length);
-                addSubTriangle(true, triangle_[SommetC], triangle_[SommetB], D);
-                addSubTriangle(true, triangle_[SommetC], E, D);
-                addSubTriangle(false, E, triangle_[SommetA], D);
-            }
-        }
-        else
-        {
-            if (acute_pattern_)
-            {
-                D = triangle_[SommetA] + getVector(triangle_[SommetA], triangle_[SommetB], length);
-                addSubTriangle(true, triangle_[SommetC], D, triangle_[SommetB]);
-                addSubTriangle(false, D, triangle_[SommetC], triangle_[SommetA]);
-            }
-            else
-            {
-                D = triangle_[SommetA] + getVector(triangle_[SommetA], triangle_[SommetC], length);
-                addSubTriangle(true, triangle_[SommetB], triangle_[SommetC], D);
-                addSubTriangle(false, D, triangle_[SommetA], triangle_[SommetB]);
-            }
-        }
+        if (properties_->obtuse_pattern_ % 2)
+            triangle.second.invert(); //Cancel invert by obtuse pattern
+
+        if (properties_->acute_pattern_ > 1)
+            triangle.second.invert();
+
+        std::pair<Triangle, Triangle> triangle2 = triangle.second.cut();
+        sub_triangles_.push_back(triangle.first);
+        sub_triangles_.push_back(triangle2.first);
+        sub_triangles_.push_back(triangle2.second);
+    }
+    else if (!acute_ && properties_->obtuse_double_cut_)
+    {
+        if (properties_->acute_pattern_ % 2)
+            triangle.first.invert(); //Cancel invert by obtuse pattern
+
+        if (properties_->obtuse_pattern_ > 1)
+            triangle.first.invert();
+
+        std::pair<Triangle, Triangle> triangle2 = triangle.first.cut();
+        sub_triangles_.push_back(triangle.second);
+        sub_triangles_.push_back(triangle2.first);
+        sub_triangles_.push_back(triangle2.second);
     }
     else
     {
-        QPointF D;
-        double length = QVector2D(triangle_[SommetB] - triangle_[SommetA]).length();
-        if (obtuse_pattern_)
-        {
-            D = triangle_[SommetB] + getVector(triangle_[SommetB], triangle_[SommetC], length);
-            addSubTriangle(true, triangle_[SommetB], D, triangle_[SommetA]);
-            addSubTriangle(false, D, triangle_[SommetC], triangle_[SommetA]);
-        }
-        else
-        {
-            D = triangle_[SommetC] + getVector(triangle_[SommetC], triangle_[SommetB], length);
-            addSubTriangle(true, triangle_[SommetC], triangle_[SommetA], D);
-            addSubTriangle(false, D, triangle_[SommetA], triangle_[SommetB]);
-        }
+        sub_triangles_.push_back(triangle.first);
+        sub_triangles_.push_back(triangle.second);
     }
 }
 
@@ -95,21 +101,11 @@ std::list<std::pair<QPolygonF, bool>> Triangle::getTriangles(unsigned int level)
         if (sub_triangles_.empty())
             generate();
 
-        for (std::unique_ptr<Triangle> &triangle : sub_triangles_)
-            triangles.splice(triangles.begin(), triangle->getTriangles(level-1));
+        for (Triangle &triangle : sub_triangles_)
+            triangles.splice(triangles.begin(), triangle.getTriangles(level-1));
     }
     else
         triangles.push_back(std::pair<QPolygonF, bool>(triangle_, acute_));
 
     return triangles;
-}
-
-void Triangle::addSubTriangle(bool acute, QPointF &A, QPointF &B, QPointF &C)
-{
-    sub_triangles_.push_back(std::unique_ptr<Triangle>(new Triangle(acute, A, B, C, acute_pattern_, obtuse_pattern_, double_cut_)));
-}
-
-QPointF Triangle::getVector(QPointF &from, QPointF &to, double length)
-{
-    return (QVector2D(to - from).normalized()*length).toPointF();
 }
