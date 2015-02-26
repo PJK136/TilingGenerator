@@ -1,5 +1,4 @@
 #include "triangle.h"
-#include <QLineF>
 
 Triangle::Triangle(bool acute, QPointF A, QPointF B, QPointF C, int acute_pattern, int obtuse_pattern, bool acute_double_cut, bool obtuse_double_cut)
     : Triangle(acute, QPolygonF({A, B, C}), std::make_shared<Properties>(acute_pattern, obtuse_pattern, acute_double_cut, obtuse_double_cut))
@@ -34,9 +33,9 @@ void Triangle::invert()
 double Triangle::getBaseLength()
 {
     if (acute_)
-        return QLineF(triangle_[SommetB], triangle_[SommetC]).length();
+        return QVector2D(triangle_[SommetC] - triangle_[SommetB]).length();
     else
-        return QLineF(triangle_[SommetA], triangle_[SommetB]).length();
+        return QVector2D(triangle_[SommetB] - triangle_[SommetA]).length();
 }
 
 std::pair<Triangle, Triangle> Triangle::cut()

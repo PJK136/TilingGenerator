@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "triangle.h"
+#include "surface.h"
 #include <QGraphicsScene>
 #include <QWheelEvent>
 #include <QMouseEvent>
@@ -17,6 +17,111 @@
 #endif
 
 #define PHI (1. + sqrt(5.))/2
+
+#define BIT(x,n) QString::number(((x) >> (n)) & 1)
+#define BITSTOQSTRING(x) BIT(x, 0), BIT(x, 1), BIT(x, 2), BIT(x, 3), BIT(x, 4), BIT(x, 5), BIT(x, 6), BIT(x, 7)
+
+QString penrose[] = {"L\n"
+                     "1 2\n"
+                     "2 0\n"
+                     "P\n"
+                     "0.6180339887498948482045868343656381177203091798057628 0\n"
+                     "0.6180339887498948482045868343656381177203091798057628 1\n"
+                     "S\n"
+                     "0 4 0 1\n"
+                     "0 4 3 1\n"
+                     "1 2 4 3\n"
+                     "\n"
+                     "L\n"
+                     "0 1\n"
+                     "P\n"
+                     "0.6180339887498948482045868343656381177203091798057628 0\n"
+                     "S\n"
+                     "0 2 3 0\n"
+                     "1 1 2 3\n",
+
+                     "L\n"
+                     "2 0\n"
+                     "P\n"
+                     "0.6180339887498948482045868343656381177203091798057628 0\n"
+                     "S\n"
+                     "0 3 0 1\n"
+                     "1 1 2 3\n"
+                     "\n"
+                     "L\n"
+                     "0 1\n"
+                     "0 2\n"
+                     "P\n"
+                     "0.6180339887498948482045868343656381177203091798057628 0\n"
+                     "0.6180339887498948482045868343656381177203091798057628 1\n"
+                     "S\n"
+                     "0 4 2 3\n"
+                     "1 3 0 4\n"
+                     "1 1 2 3\n"};
+
+QString carre =  "L\n"
+                 "0 1\n"
+                 "1 2\n"
+                 "2 3\n"
+                 "3 0\n"
+                 "0 2\n"
+                 "P\n"
+                 ".5 0\n"
+                 ".5 1\n"
+                 ".5 2\n"
+                 ".5 3\n"
+                 ".5 4\n"
+                 "S\n"
+                 "%1 0 4 8 7\n"
+                 "%2 4 1 5 8\n"
+                 "%3 8 5 2 6\n"
+                 "%4 7 8 6 3\n"
+                 "\n"
+                 "L\n"
+                 "0 1\n"
+                 "1 2\n"
+                 "2 3\n"
+                 "3 0\n"
+                 "0 2\n"
+                 "P\n"
+                 ".5 0\n"
+                 ".5 1\n"
+                 ".5 2\n"
+                 ".5 3\n"
+                 ".5 4\n"
+                 "S\n"
+                 "%5 0 4 8 7\n"
+                 "%6 4 1 5 8\n"
+                 "%7 8 5 2 6\n"
+                 "%8 7 8 6 3\n";
+
+QString triangle = "L\n"
+                   "0 1\n"
+                   "1 2\n"
+                   "2 0\n"
+                   "P\n"
+                   ".5 0\n"
+                   ".5 1\n"
+                   ".5 2\n"
+                   "S\n"
+                   "%1 0 3 5\n"
+                   "%2 3 1 4\n"
+                   "%3 4 5 2\n"
+                   "%4 3 4 5\n"
+                   "\n"
+                   "L\n"
+                   "0 1\n"
+                   "1 2\n"
+                   "2 0\n"
+                   "P\n"
+                   ".5 0\n"
+                   ".5 1\n"
+                   ".5 2\n"
+                   "S\n"
+                   "%5 0 3 5\n"
+                   "%6 3 1 4\n"
+                   "%7 5 4 2\n"
+                   "%8 3 4 5\n";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -45,8 +150,8 @@ MainWindow::MainWindow(QWidget *parent) :
     brushes_[1][1].setColor(QColor(grayYellow, grayYellow, grayYellow));
 
     regenerate();
-    ui->graphicsView->rotate(180);
-    ui->graphicsView->scale(pow(1.15, 40.), pow(1.15, 40.));
+    //ui->graphicsView->rotate(180);
+    ui->graphicsView->scale(pow(1.15, 40.), -pow(1.15, 40.));
     ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
     ui->graphicsView->setScene(scene_);
     ui->graphicsView->viewport()->installEventFilter(this);
@@ -73,115 +178,129 @@ void MainWindow::updatePensAndBrushes()
 
 void MainWindow::regenerate()
 {
-    triangles_.clear();
+    surfaces_.clear();
 
-    if (ui->acute_double_cut->isChecked())
-        ui->acute_pattern->setMaximum(4);
-    else
-        ui->acute_pattern->setMaximum(2);
-
-    if (ui->obtuse_double_cut->isChecked())
-        ui->obtuse_pattern->setMaximum(4);
-    else
-        ui->obtuse_pattern->setMaximum(2);
-
-    QRectF scene;
-
-    if (ui->polygon->currentIndex() <= 1)
+    double x = 0, y = 0, height = 1, width = 1;
+    if (ui->tiling->currentIndex() == 0)
     {
-        QPolygonF triangle;
-        double height = 0, width = 0;
-        if (ui->polygon->currentIndex() == 0)
+        ui->start->setMaximum(1);
+        ui->model->setMaximum(256);
+        surfaces_.push_back(Surface(QPolygonF({QPointF(0,0), QPointF(1, 0), QPointF(1, 1), QPointF(0, 1)}),
+                                    ui->start->value(),
+                                    std::make_shared<Properties>(carre.arg(BITSTOQSTRING(ui->model->value()-1)))));
+    }
+    if (ui->tiling->currentIndex() == 1)
+    {
+        ui->start->setMaximum(1);
+        ui->model->setMaximum(256);
+        surfaces_.push_back(Surface(QPolygonF({QPointF(0,0), QPointF(1, 0), QPointF(0.5, sin(M_PI/3.))}),
+                                    ui->start->value(),
+                                    std::make_shared<Properties>(triangle.arg(BITSTOQSTRING(ui->model->value()-1)))));
+    }
+    if (ui->tiling->currentIndex() == 2)
+    {
+        ui->start->setMaximum(5);
+        ui->model->setMaximum(2);
+        auto properties = std::make_shared<Properties>(penrose[ui->model->value()-1]);
+        switch (ui->start->value())
         {
-            height = sqrt(2.*sqrt(5.)+5.)/2.;
-            width = 1.;
+        case 0:
+        case 1:
+            if (!ui->start->value())
+            {
+                height = sqrt(2.*sqrt(5.)+5.)/2.;
+                width = 1.;
+            }
+            else
+            {
+                height = sqrt(-sqrt(5.) * 2. + 10.)/4.;
+                width = (1.+sqrt(5.))/2.;
+            }
+
+            surfaces_.push_back(Surface(QPolygonF({QPointF(0, 0), QPointF(width, 0), QPointF(width/2, height)}),
+                                        ui->start->value(),
+                                        properties));
+            break;
+        case 2:
+            height = PHI;
+            width = cos(M_PI/10.)*2.;
+            x = -width/2;
+            surfaces_.push_back(Surface(QPolygonF({QPointF(0, 0), QPointF(cos(M_PI/10.), sin(M_PI/10.)), QPointF(0, PHI)}),
+                                        0,
+                                        properties));
+            surfaces_.push_back(Surface(QPolygonF({QPointF(0, 0), QPointF(cos(9.*M_PI/10.), sin(9.*M_PI/10.)), QPointF(0, PHI)}),
+                                        0,
+                                        properties));
+            break;
+        case 3:
+            width = cos(M_PI/10.)*2.;
+            height = 1 + sin(M_PI/10.);
+            x = -width/2;
+            y = 1 - height;
+            surfaces_.push_back(Surface(QPolygonF({QPointF(0, 1), QPointF(cos(-M_PI/10.), sin(-M_PI/10.)), QPointF(0, 0)}),
+                                        1,
+                                        properties));
+            surfaces_.push_back(Surface(QPolygonF({QPointF(0, 1), QPointF(cos(-9.*M_PI/10.), sin(-9.*M_PI/10.)), QPointF(0, 0)}),
+                                        1,
+                                        properties));
+            break;
+        case 4:
+            {
+                height = 2*PHI;
+                width = sqrt(2.*sqrt(5.)+5.);
+                x = -width/2;
+                y = -height/2;
+
+                QPointF A(0,0);
+                QPointF B(0, PHI);
+
+                for (unsigned int i = 0; i < 10; i++)
+                {
+                    QPointF C = QTransform().rotate(36*(i+1)).map(QPointF(0, PHI));
+                    if (i % 2 == 0)
+                        surfaces_.push_back(Surface(QPolygonF({B, C, A}), 0, properties));
+                    else
+                        surfaces_.push_back(Surface(QPolygonF({C, B, A}), 0, properties));
+                    B = C;
+                }
+
+                QPointF test = getVector(surfaces_.back().polygon()[2], surfaces_.back().polygon()[0]);
+                qDebug(QString::number(test.x()).toLatin1());
+                qDebug(QString::number(test.y()).toLatin1());
+                qDebug(QString::number(atan2(test.y(), test.x())).toLatin1());
+                test = getVector(surfaces_.front().polygon()[2], surfaces_.front().polygon()[0]);
+                qDebug(QString::number(atan2(test.y(), test.x())).toLatin1());
+                qDebug(QString::number(test.x()).toLatin1());
+                qDebug(QString::number(test.y()).toLatin1());
+            }
+            break;
+        case 5:
+            {
+                height = 2*PHI;
+                width = 2*PHI;
+                x = -width/2;
+                y = -height/2;
+
+                QPointF B(0,0);
+                QPointF C(0, PHI);
+                QTransform transform;
+                transform.rotate(36.);
+                for (unsigned int i = 0; i < 5; i++)
+                {
+                    QPointF A = B + transform.map(getVector(B, C));
+                    surfaces_.push_back(Surface(QPolygonF({B, C, A}), 1, properties));
+                    C = B + transform.map(getVector(B, A, PHI));
+                    surfaces_.push_back(Surface(QPolygonF({B, C, A}), 1, properties));
+                }
+            }
+            break;
         }
-        else
-        {
-            height = sqrt(-sqrt(5.) * 2. + 10.)/4.;
-            width = (1.+sqrt(5.))/2.;
-        }
-
-        triangle << QPointF(width/2, height) << QPointF(0,0) << QPointF(width, 0);
-        triangles_.push_back(Triangle(!ui->polygon->currentIndex(), triangle,
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-        scene.setCoords(-0.1, -0.1, width + 0.1, height + 0.1);
-    }
-    else if (ui->polygon->currentIndex() == 2)
-    {
-        triangles_.push_back(Triangle(true, QPointF(0,PHI), QPointF(0,0), QPointF(cos(M_PI/10.), sin(M_PI/10.)),
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-
-        triangles_.push_back(Triangle(true, QPointF(0,PHI), QPointF(0,0), QPointF(cos(9*M_PI/10.), sin(9*M_PI/10.)),
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-
-        double width = cos(M_PI/10.)*2.;
-        double height = PHI;
-        scene.setRect(-width/2 - 0.1, -0.1, width + 0.2, height + 0.2);
-    }
-    else if (ui->polygon->currentIndex() == 3)
-    {
-        triangles_.push_back(Triangle(false, QPointF(0,0), QPointF(0,1), QPointF(cos(-M_PI/10.), sin(-M_PI/10.)),
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-
-        triangles_.push_back(Triangle(false, QPointF(0,0), QPointF(0,1), QPointF(cos(-9*M_PI/10.), sin(-9*M_PI/10.)),
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-
-        double width = cos(M_PI/10.)*2.;
-        double height = 1 + sin(M_PI/10.);
-        scene.setRect(-width/2 - 0.1, -sin(M_PI/10.) - 0.1, width + 0.2, height + 0.2);
-
-    }
-    else if (ui->polygon->currentIndex() == 4)
-    {
-        QPointF A(0,0);
-        QPointF B(0, PHI);
-        QTransform transform;
-        transform.rotate(36);
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            QPointF C = A + transform.map(B-A);
-            triangles_.push_back(Triangle(true, A, B, C,
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-            if (i % 2 == 0)
-                triangles_.back().invert();
-            B = C;
-        }
-
-        double height = 2*PHI, width = sqrt(2.*sqrt(5.)+5.);
-        scene.setRect(-width/2 - 0.1, -height/2 - 0.1, width + 0.2, height + 0.2);
-    }
-    else
-    {
-        QPointF B(0,0);
-        QPointF C(0, PHI);
-        QTransform transform;
-        transform.rotate(36);
-        for (unsigned int i = 0; i < 5; i++)
-        {
-            QPointF A = B + transform.map(getVector(B, C, 1));
-            triangles_.push_back(Triangle(false, A, B, C,
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-            C = B + transform.map(getVector(B, A, PHI));
-            triangles_.push_back(Triangle(false, A, B, C,
-                                 ui->acute_pattern->value()-1, ui->obtuse_pattern->value()-1,
-                                 ui->acute_double_cut->isChecked(), ui->obtuse_double_cut->isChecked()));
-        }
-
-        double height = 2*PHI, width = 2*PHI;
-        scene.setRect(-width/2 - 0.1, -height/2, width + 0.2, height + 0.2);
     }
 
-    scene_->setSceneRect(scene);
-    ui->graphicsView->setSceneRect(scene);
-    ui->graphicsView->fitInView(scene, Qt::KeepAspectRatio);
+    scene_->setSceneRect(x - 0.1, y - 0.1, width + 0.2, height + 0.2);
+    ui->graphicsView->setSceneRect(scene_->sceneRect());
+    ui->graphicsView->fitInView(ui->graphicsView->sceneRect(), Qt::KeepAspectRatio);
+
     draw();
 }
 
@@ -199,43 +318,56 @@ void MainWindow::draw()
     unsigned long count[2] = {0};
     unsigned long circle_count[2] = {0};
 
-    for (Triangle &triangle : triangles_)
+    lines_map lines;
+    for (Surface &surface : surfaces_)
     {
-        for (std::pair<QPolygonF, bool> &polygon : triangle.getTriangles(ui->level->value()))
+        unsigned int type = surface.type();
+        scene_->addPolygon(surface.polygon(), pens_[type+1][0], brushes_[type][0]);
+        for (std::pair<QPolygonF, int> &polygon : surface.getPolygons(ui->level->value(), type))
         {
-            bool intersect = false;
+            bool color = false;
             if (ui->circle->isChecked())
             {
                 if (ui->entire_triangles->isChecked() &&
                     circle.contains(polygon.first[0]) && circle.contains(polygon.first[1]) && circle.contains(polygon.first[2]))
-                    intersect = true;
+                    color = true;
                 else if (!ui->entire_triangles->isChecked() &&
                          (circle.contains(polygon.first[0]) || circle.contains(polygon.first[1]) || circle.contains(polygon.first[2])))
-                    intersect = true;
+                    color = true;
             }
             else
-                intersect = true;
+                color = true;
 
-            count[!polygon.second]++;
-            if (!ui->circle->isChecked() || intersect)
-                circle_count[!polygon.second]++;
+            count[polygon.second]++;
+            if (color)
+                circle_count[polygon.second]++;
 
-            if (ui->line_color->isChecked())
-                scene_->addPolygon(polygon.first, pens_[!polygon.second + 1][!intersect], brushes_[!polygon.second][!intersect]);
-            else
-                scene_->addPolygon(polygon.first, pens_[0][0], brushes_[!polygon.second][!intersect]);
+            //if (ui->line_color->isChecked())
+            scene_->addPolygon(polygon.first, pens_[polygon.second+1][!color], brushes_[polygon.second][!color]);
+            /*else
+                scene_->addPolygon(polygon.first, pens_[0][0], brushes_[polygon.second][!color]);*/
+        }
+
+        surface.getLines(ui->level->value(), lines);
+    }
+
+    for (std::pair<QLineF, int> line : lines)
+    {
+        //if (line.second != -1)
+        {
+             scene_->addLine(line.first, pens_[0][0]);
         }
     }
 
-    ui->acute_count->setText(QString::number(count[0]));
-    ui->obtuse_count->setText(QString::number(count[1]));
+    ui->first_count->setText(QString::number(count[0]));
+    ui->second_count->setText(QString::number(count[1]));
     ui->total->setText(QString::number(count[0] + count[1]));
     ui->ratio->setText(QString::number((double)qMax(count[0], count[1])/qMin(count[0], count[1]), 'g', 15));
     if (ui->circle->isChecked())
     {
         scene_->addPath(circle, pens_[0][0]);
-        ui->circle_acute_count->setText(QString::number(circle_count[0]));
-        ui->circle_obtuse_count->setText(QString::number(circle_count[1]));
+        ui->circle_first_count->setText(QString::number(circle_count[0]));
+        ui->circle_second_count->setText(QString::number(circle_count[1]));
         ui->circle_total->setText(QString::number(circle_count[0] + circle_count[1]));
         ui->circle_ratio->setText(QString::number((double)qMax(circle_count[0], circle_count[1])/qMin(circle_count[0], circle_count[1]), 'g', 15));
     }
@@ -309,8 +441,8 @@ void MainWindow::zoom(QWheelEvent* event)
 void MainWindow::moveCircle(QMouseEvent *event)
 {
     static QPoint lastMousePos = event->pos();
-    static long lastTimestamp = 0;
-    static int renderDuration = 0;
+    static unsigned long lastTimestamp = 0;
+    static unsigned int renderDuration = 0;
 
     if (event->timestamp() - lastTimestamp < renderDuration)
         return;
@@ -346,5 +478,5 @@ void MainWindow::counterclockwiseRotation()
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, "À propos de Penrose Generator", "<strong>Penrose Generator</strong><br/>Générateur de pavages de Penrose à l'aide de triangles d'or.<br/>Copyright © 2014 Paul DU");
+    QMessageBox::about(this, "À propos de Tiling Generator", "<strong>Tiling Generator</strong><br/>Générateur de pavages.<br/>Copyright © 2014-2015 Paul DU");
 }

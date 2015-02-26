@@ -5,13 +5,11 @@
 #include <list>
 #include <memory>
 #include <QPolygonF>
+#include <QVector2D>
 
-inline QPointF getVector(QPointF &from, QPointF &to, double length)
+static inline QPointF getVector(QPointF &from, QPointF &to, double length)
 {
-    double dx = to.x()-from.x();
-    double dy = to.y()-from.y();
-    length /= sqrt(dx*dx + dy*dy);
-    return QPointF(dx*length, dy*length);
+    return (QVector2D(to - from).normalized()*length).toPointF();
 }
 
 class Triangle

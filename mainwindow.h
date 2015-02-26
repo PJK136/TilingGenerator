@@ -33,7 +33,7 @@ protected:
 private:
     Ui::MainWindow *ui;
     class QGraphicsScene *scene_;
-    std::list<class Triangle> triangles_;
+    std::list<class Surface> surfaces_;
     QPen pens_[3][2];
     QBrush brushes_[2][2];
     QRectF circle_;
