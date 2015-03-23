@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
-    <height>584</height>
+    <width>900</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="4">
+    <item row="0" column="2">
      <widget class="QGraphicsView" name="graphicsView">
       <property name="renderHints">
        <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
@@ -28,13 +28,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="0" column="1">
      <layout class="QFormLayout" name="formLayout">
       <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
-      <property name="labelAlignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_8">
@@ -45,6 +42,12 @@
       </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="tiling">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <item>
          <property name="text">
           <string>Carré</string>
@@ -60,6 +63,43 @@
           <string>Penrose</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Pièce de départ :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="start">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Modèle :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="model">
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
        </widget>
       </item>
       <item row="3" column="0">
@@ -79,18 +119,32 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Couleurs lignes :</string>
+         <string>Toutes les
+surfaces :</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QCheckBox" name="line_color">
+       <widget class="QCheckBox" name="all_surfaces">
         <property name="text">
          <string/>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>Taille pinceau :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QDoubleSpinBox" name="pen_width"/>
+      </item>
+      <item row="6" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
          <string>Type de
@@ -98,7 +152,7 @@ remplissage :</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="6" column="1">
        <widget class="QSpinBox" name="filling_type">
         <property name="maximum">
          <number>14</number>
@@ -108,14 +162,14 @@ remplissage :</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Rotation :</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="7" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="pushButton_2">
@@ -145,182 +199,208 @@ remplissage :</string>
         </item>
        </layout>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
          <string>Pièce 1 :</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <widget class="QLabel" name="first_count">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="9" column="0">
        <widget class="QLabel" name="label_14">
         <property name="text">
          <string>Pièce 2 :</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="9" column="1">
        <widget class="QLabel" name="second_count">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="9" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="label_16">
         <property name="text">
          <string>Total :</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="1">
+      <item row="10" column="1">
        <widget class="QLabel" name="total">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
+      <item row="11" column="0">
        <widget class="QLabel" name="label_15">
         <property name="text">
          <string>Rapport :</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="11" column="1">
        <widget class="QLabel" name="ratio">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="11" column="0">
+      <item row="12" column="0">
        <widget class="QLabel" name="label_10">
         <property name="text">
          <string>Nombre d'or :</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
+      <item row="12" column="1">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>1.61803398874989</string>
+         <string>1.618033989</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="0">
+      <item row="13" column="0">
        <widget class="QLabel" name="label_17">
         <property name="text">
          <string>Zoom :</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="1">
+      <item row="13" column="1">
        <widget class="QLabel" name="zoom"/>
       </item>
-      <item row="13" column="0">
+      <item row="14" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>Cercle :</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="1">
+      <item row="14" column="1">
        <widget class="QCheckBox" name="circle">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="14" column="0">
+      <item row="15" column="0">
        <widget class="QLabel" name="label_18">
         <property name="text">
          <string>Motifs entiers :</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="1">
+      <item row="15" column="1">
        <widget class="QCheckBox" name="entire_triangles">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="15" column="0">
+      <item row="16" column="0">
        <widget class="QLabel" name="label_19">
         <property name="text">
          <string>Pièce 1 :</string>
         </property>
        </widget>
       </item>
-      <item row="15" column="1">
+      <item row="16" column="1">
        <widget class="QLabel" name="circle_first_count"/>
       </item>
-      <item row="16" column="0">
+      <item row="17" column="0">
        <widget class="QLabel" name="label_20">
         <property name="text">
          <string>Pièce 2 :</string>
         </property>
        </widget>
       </item>
-      <item row="16" column="1">
+      <item row="17" column="1">
        <widget class="QLabel" name="circle_second_count"/>
       </item>
-      <item row="17" column="0">
+      <item row="18" column="0">
        <widget class="QLabel" name="label_21">
         <property name="text">
          <string>Total :</string>
         </property>
        </widget>
       </item>
-      <item row="17" column="1">
+      <item row="18" column="1">
        <widget class="QLabel" name="circle_total"/>
       </item>
-      <item row="18" column="0">
+      <item row="19" column="0">
        <widget class="QLabel" name="label_23">
         <property name="text">
          <string>Rapport :</string>
         </property>
        </widget>
       </item>
-      <item row="18" column="1">
+      <item row="19" column="1">
        <widget class="QLabel" name="circle_ratio"/>
       </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="model">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>256</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
+     </layout>
+    </item>
+    <item row="0" column="3">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Modèle :</string>
+         <string>Pièce bleue :</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
+      <item>
+       <widget class="QGraphicsView" name="piece_1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="renderHints">
+         <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Pièce de départ :</string>
+         <string>Pièce jaune :</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="start">
-        <property name="maximum">
-         <number>1</number>
+      <item>
+       <widget class="QGraphicsView" name="piece_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="renderHints">
+         <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
         </property>
        </widget>
       </item>
@@ -333,7 +413,7 @@ remplissage :</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>784</width>
+     <width>900</width>
      <height>20</height>
     </rect>
    </property>
@@ -411,7 +491,7 @@ remplissage :</string>
    </hints>
   </connection>
   <connection>
-   <sender>line_color</sender>
+   <sender>all_surfaces</sender>
    <signal>toggled(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>draw()</slot>
@@ -449,8 +529,8 @@ remplissage :</string>
    <slot>clockwiseRotation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>147</x>
-     <y>229</y>
+     <x>149</x>
+     <y>274</y>
     </hint>
     <hint type="destinationlabel">
      <x>106</x>
@@ -465,8 +545,8 @@ remplissage :</string>
    <slot>counterclockwiseRotation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>185</x>
-     <y>229</y>
+     <x>189</x>
+     <y>274</y>
     </hint>
     <hint type="destinationlabel">
      <x>135</x>
@@ -497,8 +577,8 @@ remplissage :</string>
    <slot>draw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>160</x>
-     <y>193</y>
+     <x>192</x>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>195</x>
@@ -529,8 +609,8 @@ remplissage :</string>
    <slot>draw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
      <x>165</x>
@@ -545,12 +625,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>79</x>
-     <y>398</y>
+     <x>89</x>
+     <y>443</y>
     </hint>
    </hints>
   </connection>
@@ -561,12 +641,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>128</x>
-     <y>398</y>
+     <x>192</x>
+     <y>443</y>
     </hint>
    </hints>
   </connection>
@@ -577,12 +657,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
-     <y>419</y>
+     <y>464</y>
     </hint>
    </hints>
   </connection>
@@ -593,12 +673,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
      <x>61</x>
-     <y>440</y>
+     <y>485</y>
     </hint>
    </hints>
   </connection>
@@ -609,12 +689,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>51</x>
-     <y>482</y>
+     <x>61</x>
+     <y>527</y>
     </hint>
    </hints>
   </connection>
@@ -625,12 +705,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>120</x>
-     <y>419</y>
+     <x>192</x>
+     <y>464</y>
     </hint>
    </hints>
   </connection>
@@ -641,12 +721,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>120</x>
-     <y>440</y>
+     <x>192</x>
+     <y>485</y>
     </hint>
    </hints>
   </connection>
@@ -657,12 +737,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>120</x>
-     <y>482</y>
+     <x>192</x>
+     <y>527</y>
     </hint>
    </hints>
   </connection>
@@ -673,12 +753,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>44</x>
-     <y>461</y>
+     <x>45</x>
+     <y>506</y>
     </hint>
    </hints>
   </connection>
@@ -689,12 +769,12 @@ remplissage :</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>377</y>
+     <x>192</x>
+     <y>422</y>
     </hint>
     <hint type="destinationlabel">
-     <x>120</x>
-     <y>461</y>
+     <x>192</x>
+     <y>506</y>
     </hint>
    </hints>
   </connection>
@@ -705,8 +785,8 @@ remplissage :</string>
    <slot>draw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>398</y>
+     <x>192</x>
+     <y>443</y>
     </hint>
     <hint type="destinationlabel">
      <x>177</x>
@@ -743,6 +823,22 @@ remplissage :</string>
     <hint type="destinationlabel">
      <x>168</x>
      <y>64</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>all_surfaces</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>circle</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>158</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>143</x>
+     <y>413</y>
     </hint>
    </hints>
   </connection>

@@ -38,7 +38,12 @@ QString penrose[] = {"L\n"
                      "0.6180339887498948482045868343656381177203091798057628 0\n"
                      "S\n"
                      "0 2 3 0\n"
-                     "1 1 2 3\n",
+                     "1 1 2 3\n"
+                     "\n"
+                     "D\n"
+                     "0 0 1 0 0.5 1.5388417685876267012851452880184549120033510717688962\n" // h = sqrt(2.*sqrt(5.)+5.)/2.
+                     "0 0 1.6180339887498948482045868343656381177203091798057628 0 0.8090169943749474241022934171828190588601545899028814 0.5877852522924731291687059546390727685976524376431459\n",
+                     // h = sqrt(-sqrt(5.) * 2. + 10.)/4.
 
                      "L\n"
                      "2 0\n"
@@ -57,7 +62,12 @@ QString penrose[] = {"L\n"
                      "S\n"
                      "0 4 2 3\n"
                      "1 3 0 4\n"
-                     "1 1 2 3\n"};
+                     "1 1 2 3\n"
+                     "\n"
+                     "D\n"
+                     "0 0 1 0 0.5 1.5388417685876267012851452880184549120033510717688962\n" // h = sqrt(2.*sqrt(5.)+5.)/2.
+                     "0 0 1.6180339887498948482045868343656381177203091798057628 0 0.8090169943749474241022934171828190588601545899028814 0.5877852522924731291687059546390727685976524376431459\n"};
+                     // h = sqrt(-sqrt(5.) * 2. + 10.)/4.
 
 QString carre =  "L\n"
                  "0 1\n"
@@ -93,7 +103,11 @@ QString carre =  "L\n"
                  "%5 0 4 8 7\n"
                  "%6 4 1 5 8\n"
                  "%7 8 5 2 6\n"
-                 "%8 7 8 6 3\n";
+                 "%8 7 8 6 3\n"
+                 "\n"
+                 "D\n"
+                 "0 0 1 0 1 1 0 1\n"
+                 "0 0 1 0 1 1 0 1\n";
 
 QString triangle = "L\n"
                    "0 1\n"
@@ -121,7 +135,11 @@ QString triangle = "L\n"
                    "%5 0 3 5\n"
                    "%6 3 1 4\n"
                    "%7 5 4 2\n"
-                   "%8 3 4 5\n";
+                   "%8 3 4 5\n"
+                   "\n"
+                   "D\n"
+                   "0 0 1 0 0.5 0.8660254037844386467637231707529361834714026269051903\n"
+                   "0 0 1 0 0.5 0.8660254037844386467637231707529361834714026269051903\n";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -135,14 +153,10 @@ MainWindow::MainWindow(QWidget *parent) :
     int grayBlue = qGray(0,0,255);
     int grayYellow = qGray(255,255,0);
 
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 2; j++)
-            pens_[i][j].setCosmetic(true);
-
-    pens_[1][0].setColor(Qt::blue);
-    pens_[1][1].setColor(QColor(grayBlue, grayBlue, grayBlue));
-    pens_[2][0].setColor(Qt::yellow);
-    pens_[2][1].setColor(QColor(grayYellow, grayYellow, grayYellow));
+    pen_ = QPen(Qt::black);
+    pen_.setWidthF(0);
+    pen_.setCosmetic(true);
+    connect(ui->pen_width, (void (QDoubleSpinBox::*)(double))&QDoubleSpinBox::valueChanged, [this](double width){pen_.setWidthF(width); draw(); });
 
     brushes_[0][0].setColor(Qt::blue);
     brushes_[0][1].setColor(QColor(grayBlue, grayBlue, grayBlue));
@@ -150,7 +164,8 @@ MainWindow::MainWindow(QWidget *parent) :
     brushes_[1][1].setColor(QColor(grayYellow, grayYellow, grayYellow));
 
     regenerate();
-    //ui->graphicsView->rotate(180);
+    ui->piece_1->scale(pow(1.15, 37.), -pow(1.15, 37.));
+    ui->piece_2->scale(pow(1.15, 37.), -pow(1.15, 37.));
     ui->graphicsView->scale(pow(1.15, 40.), -pow(1.15, 40.));
     ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
     ui->graphicsView->setScene(scene_);
@@ -160,7 +175,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete scene_;
     delete ui;
 }
 
@@ -184,24 +198,22 @@ void MainWindow::regenerate()
     if (ui->tiling->currentIndex() == 0)
     {
         ui->start->setMaximum(1);
-        ui->model->setMaximum(256);
-        surfaces_.push_back(Surface(QPolygonF({QPointF(0,0), QPointF(1, 0), QPointF(1, 1), QPointF(0, 1)}),
-                                    ui->start->value(),
-                                    std::make_shared<Properties>(carre.arg(BITSTOQSTRING(ui->model->value()-1)))));
+        ui->model->setMaximum(255);
+        surfaces_.push_back(Surface(ui->start->value(),
+                                    std::make_shared<Properties>(carre.arg(BITSTOQSTRING(ui->model->value())))));
     }
     if (ui->tiling->currentIndex() == 1)
     {
         ui->start->setMaximum(1);
-        ui->model->setMaximum(256);
-        surfaces_.push_back(Surface(QPolygonF({QPointF(0,0), QPointF(1, 0), QPointF(0.5, sin(M_PI/3.))}),
-                                    ui->start->value(),
-                                    std::make_shared<Properties>(triangle.arg(BITSTOQSTRING(ui->model->value()-1)))));
+        ui->model->setMaximum(255);
+        surfaces_.push_back(Surface(ui->start->value(),
+                                    std::make_shared<Properties>(triangle.arg(BITSTOQSTRING(ui->model->value())))));
     }
     if (ui->tiling->currentIndex() == 2)
     {
         ui->start->setMaximum(5);
-        ui->model->setMaximum(2);
-        auto properties = std::make_shared<Properties>(penrose[ui->model->value()-1]);
+        ui->model->setMaximum(1);
+        auto properties = std::make_shared<Properties>(penrose[ui->model->value()]);
         switch (ui->start->value())
         {
         case 0:
@@ -217,9 +229,7 @@ void MainWindow::regenerate()
                 width = (1.+sqrt(5.))/2.;
             }
 
-            surfaces_.push_back(Surface(QPolygonF({QPointF(0, 0), QPointF(width, 0), QPointF(width/2, height)}),
-                                        ui->start->value(),
-                                        properties));
+            surfaces_.push_back(Surface(ui->start->value(), properties));
             break;
         case 2:
             height = PHI;
@@ -263,15 +273,6 @@ void MainWindow::regenerate()
                         surfaces_.push_back(Surface(QPolygonF({C, B, A}), 0, properties));
                     B = C;
                 }
-
-                QPointF test = getVector(surfaces_.back().polygon()[2], surfaces_.back().polygon()[0]);
-                qDebug(QString::number(test.x()).toLatin1());
-                qDebug(QString::number(test.y()).toLatin1());
-                qDebug(QString::number(atan2(test.y(), test.x())).toLatin1());
-                test = getVector(surfaces_.front().polygon()[2], surfaces_.front().polygon()[0]);
-                qDebug(QString::number(atan2(test.y(), test.x())).toLatin1());
-                qDebug(QString::number(test.x()).toLatin1());
-                qDebug(QString::number(test.y()).toLatin1());
             }
             break;
         case 5:
@@ -302,11 +303,28 @@ void MainWindow::regenerate()
     ui->graphicsView->fitInView(ui->graphicsView->sceneRect(), Qt::KeepAspectRatio);
 
     draw();
+
+    if(ui->piece_1->scene())
+        delete ui->piece_1->scene();
+    if(ui->piece_2->scene())
+        delete ui->piece_2->scene();
+
+    ui->piece_1->setScene(new QGraphicsScene(this));
+    ui->piece_2->setScene(new QGraphicsScene(this));
+    for (std::pair<QPolygonF, int> &polygon : Surface(0, surfaces_.front().properties()).getPolygons(1))
+        ui->piece_1->scene()->addPolygon(polygon.first, pen_, QBrush(!polygon.second ? Qt::blue : Qt::yellow));
+    for (std::pair<QPolygonF, int> &polygon : Surface(1, surfaces_.front().properties()).getPolygons(1))
+        ui->piece_2->scene()->addPolygon(polygon.first, pen_, QBrush(!polygon.second ? Qt::blue : Qt::yellow));
 }
 
 void MainWindow::draw()
 {
     updatePensAndBrushes();
+    if (!ui->all_surfaces->isChecked() && ui->circle->isChecked())
+    {
+        ui->circle->toggle();
+        return;
+    }
 
     ui->graphicsView->setUpdatesEnabled(false);
     scene_->clear();
@@ -318,12 +336,12 @@ void MainWindow::draw()
     unsigned long count[2] = {0};
     unsigned long circle_count[2] = {0};
 
-    lines_map lines;
     for (Surface &surface : surfaces_)
     {
-        unsigned int type = surface.type();
-        scene_->addPolygon(surface.polygon(), pens_[type+1][0], brushes_[type][0]);
-        for (std::pair<QPolygonF, int> &polygon : surface.getPolygons(ui->level->value(), type))
+        if (!ui->all_surfaces->isChecked())
+            scene_->addPolygon(surface.polygon(), pen_, brushes_[surface.type()][0]);
+
+        for (std::pair<QPolygonF, int> &polygon : surface.getPolygons(ui->level->value(), ui->all_surfaces->isChecked() ? -1 : surface.type()))
         {
             bool color = false;
             if (ui->circle->isChecked())
@@ -342,34 +360,25 @@ void MainWindow::draw()
             if (color)
                 circle_count[polygon.second]++;
 
-            //if (ui->line_color->isChecked())
-            scene_->addPolygon(polygon.first, pens_[polygon.second+1][!color], brushes_[polygon.second][!color]);
-            /*else
-                scene_->addPolygon(polygon.first, pens_[0][0], brushes_[polygon.second][!color]);*/
-        }
-
-        surface.getLines(ui->level->value(), lines);
-    }
-
-    for (std::pair<QLineF, int> line : lines)
-    {
-        //if (line.second != -1)
-        {
-             scene_->addLine(line.first, pens_[0][0]);
+            scene_->addPolygon(polygon.first, pen_, brushes_[polygon.second][!color]);
         }
     }
+
+    if (!ui->all_surfaces->isChecked())
+        for (Surface &surface : surfaces_)
+            count[surface.type()] += surface.getPolygons(ui->level->value(), !surface.type()).size();
 
     ui->first_count->setText(QString::number(count[0]));
     ui->second_count->setText(QString::number(count[1]));
     ui->total->setText(QString::number(count[0] + count[1]));
-    ui->ratio->setText(QString::number((double)qMax(count[0], count[1])/qMin(count[0], count[1]), 'g', 15));
+    ui->ratio->setText(QString::number((double)qMax(count[0], count[1])/qMin(count[0], count[1]), 'g', 10));
     if (ui->circle->isChecked())
     {
-        scene_->addPath(circle, pens_[0][0]);
+        scene_->addPath(circle, pen_);
         ui->circle_first_count->setText(QString::number(circle_count[0]));
         ui->circle_second_count->setText(QString::number(circle_count[1]));
         ui->circle_total->setText(QString::number(circle_count[0] + circle_count[1]));
-        ui->circle_ratio->setText(QString::number((double)qMax(circle_count[0], circle_count[1])/qMin(circle_count[0], circle_count[1]), 'g', 15));
+        ui->circle_ratio->setText(QString::number((double)qMax(circle_count[0], circle_count[1])/qMin(circle_count[0], circle_count[1]), 'g', 10));
     }
     ui->graphicsView->setUpdatesEnabled(true);
 }
@@ -385,7 +394,7 @@ void MainWindow::save()
     QPainter painter(&image);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     scene_->render(&painter);
-    image.transformed(QTransform().rotate(180)).save(filename);
+    image.transformed(QTransform().scale(1, -1)).save(filename);
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *e)
@@ -435,6 +444,7 @@ void MainWindow::zoom(QWheelEvent* event)
             ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
 
         ui->zoom->setText(QString::number(abs(ui->graphicsView->matrix().m11())));
+        //draw();
     }
 }
 
@@ -462,18 +472,19 @@ void MainWindow::moveCircle(QMouseEvent *event)
     lastMousePos = event->pos();
 
     draw();
+    qDebug(QString("%1 %2").arg(ui->circle_first_count->text(), ui->circle_second_count->text()).toLatin1());
     renderDuration = drawingTime.elapsed();
     lastTimestamp = event->timestamp();
 }
 
 void MainWindow::clockwiseRotation()
 {
-    ui->graphicsView->rotate(36);
+    ui->graphicsView->rotate(72);
 }
 
 void MainWindow::counterclockwiseRotation()
 {
-    ui->graphicsView->rotate(-36);
+    ui->graphicsView->rotate(-72);
 }
 
 void MainWindow::about()

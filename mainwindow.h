@@ -34,7 +34,7 @@ private:
     Ui::MainWindow *ui;
     class QGraphicsScene *scene_;
     std::list<class Surface> surfaces_;
-    QPen pens_[3][2];
+    QPen pen_;
     QBrush brushes_[2][2];
     QRectF circle_;
 };

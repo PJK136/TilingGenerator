@@ -6,11 +6,16 @@
 
 #define PHI (1. + sqrt(5.))/2
 
-Surface::Surface(const QPolygonF &polygon, unsigned int type, std::shared_ptr<Properties> properties)
+Surface::Surface(unsigned int type, std::shared_ptr<const Properties> properties) :
+    polygon_(properties->defaults[type]), type_(type), properties_(properties)
 {
-    polygon_ = polygon;
-    type_ = type;
-    properties_ = properties;
+}
+
+Surface::Surface(const QPolygonF &polygon, unsigned int type, std::shared_ptr<const Properties> properties) :
+    polygon_(polygon), type_(type), properties_(properties)
+{
+    if (polygon_.empty())
+        polygon_ = properties->defaults[type];
 }
 
 Surface::~Surface()
@@ -69,35 +74,6 @@ std::list<std::pair<QPolygonF, int>> Surface::getPolygons(unsigned int level, in
     return surfaces;
 }
 
-void Surface::getLines(unsigned int level, lines_map &lines)
-{
-    if (level)
-    {
-        if (sub_surfaces_.empty())
-            generate();
-
-        for (Surface &surface : sub_surfaces_)
-            surface.getLines(level-1, lines);
-    }
-    else
-    {
-        for (int i = 0; i < polygon_.size(); i++)
-        {
-            QLineF line;
-
-            if (i == polygon_.size()-1)
-                line.setPoints(polygon_[polygon_.size()-1], polygon_[0]);
-            else
-                line.setPoints(polygon_[i], polygon_[i+1]);
-
-            if (lines.find(line) == lines.end())
-                lines[line] = type_;
-            else if (lines[line] == type_)
-                lines[line] = -1;
-        }
-    }
-}
-
 int Surface::type() const
 {
     return type_;
@@ -108,6 +84,10 @@ QPolygonF Surface::polygon() const
     return polygon_;
 }
 
+std::shared_ptr<const Properties> Surface::properties() const
+{
+    return properties_;
+}
 
 Properties::Properties(QString source)
 {
@@ -129,24 +109,40 @@ Properties::Properties(QString source)
             mode = 1;
         else if (line.contains("S"))
             mode = 2;
+        else if (line.contains("D"))
+            mode = 3;
         else
         {
             QStringList args = line.split(" ");
             if (args.isEmpty())
                 continue;
 
-            if (mode == 0)
-                rules[i].lines.push_back({args[0].toUInt(), args[1].toUInt()});
-            else if (mode == 1)
-                rules[i].points.push_back({args[0].toDouble(), args[1].toUInt()});
-            else
+            switch (mode)
             {
-                unsigned int type = args.takeFirst().toUInt();
-                std::list<char> points;
-                for (QString string : args)
-                    points.push_back(string.toUInt());
-                rules[i].surfaces.push_back({points, type});
-            }
+            case 0:
+                rules[i].lines.push_back({args[0].toUInt(), args[1].toUInt()});
+                break;
+            case 1:
+                rules[i].points.push_back({args[0].toDouble(), args[1].toUInt()});
+                break;
+            case 2:
+                {
+                    unsigned int type = args.takeFirst().toUInt();
+                    std::list<char> points;
+                    for (QString string : args)
+                        points.push_back(string.toUInt());
+                    rules[i].surfaces.push_back({points, type});
+                }
+                break;
+            case 3:
+                {
+                    QPolygonF polygon;
+                    while (!args.empty())
+                        polygon.append({args.takeFirst().toDouble(), args.takeFirst().toDouble()});
+                    defaults.push_back(polygon);
+                }
+                break;
+            };
         }
     }
 }
