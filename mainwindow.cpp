@@ -389,7 +389,7 @@ void MainWindow::save()
     if (filename.isEmpty())
         return;
 
-    QImage image((scene_->sceneRect().size()*abs(ui->graphicsView->transform().m11())).toSize(), QImage::Format_RGB32);
+    QImage image((scene_->sceneRect().size()*std::abs(ui->graphicsView->transform().m11())).toSize(), QImage::Format_RGB32);
     image.fill(Qt::white);
     QPainter painter(&image);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
@@ -443,7 +443,7 @@ void MainWindow::zoom(QWheelEvent* event)
         else
             ui->graphicsView->scale(1.0 / scaleFactor, 1.0 / scaleFactor);
 
-        ui->zoom->setText(QString::number(abs(ui->graphicsView->matrix().m11())));
+        ui->zoom->setText(QString::number(std::abs(ui->graphicsView->matrix().m11())));
         //draw();
     }
 }

@@ -7,6 +7,7 @@
 #include <memory>
 #include <QPolygonF>
 #include <QLineF>
+#include <cmath>
 
 class Properties
 {
