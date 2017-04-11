@@ -453,6 +453,9 @@ remplissage :</string>
    <property name="text">
     <string>Enregistrer ...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
