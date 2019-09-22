@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=TilingGenerator
+Comment=Générateur de pavage
+Exec=TilingGenerator
+Icon=TilingGenerator
+Categories=Science;

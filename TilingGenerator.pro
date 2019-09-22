@@ -21,3 +21,20 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+linux-g++ {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+    target.path = $$PREFIX/bin
+
+    desktop.path = $$PREFIX/share/applications/
+    desktop.files += TilingGenerator.desktop
+
+    icon.path = $$PREFIX/share/icons/hicolor/scalable/apps/
+    icon.files += TilingGenerator.svg
+
+    INSTALLS += icon
+    INSTALLS += desktop
+    INSTALLS += target
+}
+
